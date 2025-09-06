@@ -14,7 +14,7 @@ While the software will be built in a location agnostic manner the initial targe
 
 ## Who?
 
-This project is a joint effort of Eccentric Quality Solutions (Dave Mackey), Softground Dev (Schuster Braun), and AugustaDevs (Tech Talk Augusta).
+This project is a joint effort of [Eccentric Quality Solutions](https://eccentricquality.com/) (Dave Mackey), [Softground Dev](https://softground.dev/) (Schuster Braun), and AugustaDevs ([Tech Talk Augusta](https://techtalkaugusta.com/)).
 
 ## License
 
