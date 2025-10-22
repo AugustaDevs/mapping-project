@@ -6,7 +6,7 @@ The Mapping Project is both a functional service we intend to provide and a lear
 
 ## Steps
 - Fork this repo.
-- Read [The Next Step](THE-NEXT-STEP.md)
+- Read [The Next Step](devDocs/THE-NEXT-STEP.md)
 - Grab a copy of LeafletJS.
 - Dive in.
 - When you have interesting things to show, push a PR.
