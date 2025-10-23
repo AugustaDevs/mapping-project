@@ -22,14 +22,131 @@
                 zoom: 15,
                 maxBounds: bounds,
                 maxBoundsViscosity: 1.0, // Prevents panning outside bounds
+                zoomControl: false, // Removes zoom buttons for cleaner look
                 // dragging: false // This doesn't adjust with zoom, so folks can't see whole map at zoom
             }
             ).setView([33.47718, -81.97114], 15);
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            // Define multiple artistic tile layers (all free, no API key required)
+            const tileLayers = {
+                // CartoDB styles - free and artistic
+                dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                    subdomains: 'abcd'
+                }),
+                
+                voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                    subdomains: 'abcd'
+                }),
+                
+                positron: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                    subdomains: 'abcd'
+                }),
+                
+                // OpenStreetMap variants
+                osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors'
+                }),
+                
+                // Esri satellite imagery - very artistic!
+                satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19,
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                })
+            };
+
+            // Start with voyager theme - chill and artistic without being too dark
+            tileLayers.voyager.addTo(map);
+
+            // Add layer control for easy switching
+            L.control.layers({
+                "🗺️ Voyager": tileLayers.voyager,
+                "☀️ Light Theme": tileLayers.positron,
+                "🛰️ Satellite": tileLayers.satellite,
+                "🌙 Dark Theme": tileLayers.dark,
+                "📍 Standard": tileLayers.osm
             }).addTo(map);
+
+            // Temporary marker for placing pins
+            let tempMarker = null;
+            
+            // Click event to place temporary marker and show coordinates
+            map.on('click', function(e) {
+                const lat = e.latlng.lat.toFixed(6);
+                const lng = e.latlng.lng.toFixed(6);
+                
+                // Remove previous temporary marker if it exists
+                if (tempMarker) {
+                    map.removeLayer(tempMarker);
+                }
+                
+                // Add new temporary marker
+                tempMarker = L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="text-align: center;">
+                            <h3>📍 Coordinates</h3>
+                            <p><strong>Latitude:</strong> ${lat}</p>
+                            <p><strong>Longitude:</strong> ${lng}</p>
+                            <p><small>Click anywhere else to place a new pin</small></p>
+                            <button onclick="copyCoordinates('${lat}, ${lng}')">Copy Coordinates</button>
+                        </div>
+                    `)
+                    .openPopup();
+                
+                // Also log to console for easy copying
+                console.log(`Coordinates: ${lat}, ${lng}`);
+            });
+            
+            // Function to copy coordinates to clipboard
+            window.copyCoordinates = function(coords) {
+                navigator.clipboard.writeText(coords).then(function() {
+                    alert('Coordinates copied to clipboard: ' + coords);
+                }).catch(function() {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = coords;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Coordinates copied to clipboard: ' + coords);
+                });
+            };
+
+            // Add marker for Book Tavern (temporary - will be updated with correct coordinates)
+            const bookTavernMarker = L.marker([33.476753, -81.970893])
+                .addTo(map)
+                .bindPopup(`
+                    <div style="text-align: center;">
+                        <h3>📚The Book Tavern</h3>
+                        <p><strong>978 Broad Street</strong></p>
+                        <p>Augusta, GA 30901</p>
+                        <p>Bookstore</p>
+                        <p><em>Downtown Augusta</em></p>
+                        <p><small style="color: red;">Coordinates need to be updated</small></p>
+                    </div>
+                `);
+
+            // Add marker for Boll Weevil
+            const bollWeevilMarker = L.marker([33.478082, -81.966172])
+                .addTo(map)
+                .bindPopup(`
+                    <div style="text-align: center;">
+                        <h3>🐛 Boll Weevil Cafe & Sweetery</h3>
+                        <p><strong>Broad Street</strong></p>
+                        <p>Augusta, GA</p>
+                        <p>Restaurant & Cafe</p>
+                        <p><em>Downtown Augusta</em></p>
+                        <p><small style="color: red;">Coordinates need to be updated with exact location</small></p>
+                    </div>
+                `);
         </script>
     </body>
 </html>
