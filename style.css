@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 body {
     margin: 0;
     padding: 0;
@@ -69,9 +68,4 @@ body {
 .leaflet-popup-tip {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-=======
-#map {
-    height: 100%;
-    margin: 0;
->>>>>>> e632f95 (hey, it's a map)
 }
