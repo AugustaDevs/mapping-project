@@ -86,8 +86,10 @@
                     map.removeLayer(tempMarker);
                 }
                 
-                // Add new temporary marker
-                tempMarker = L.marker([lat, lng])
+                // Add new temporary marker with emoji
+                tempMarker = L.marker([lat, lng], {
+                    icon: createEmojiMarker('📍', 30)
+                })
                     .addTo(map)
                     .bindPopup(`
                         <div style="text-align: center;">
@@ -120,8 +122,21 @@
                 });
             };
 
+            // Create custom emoji markers
+            function createEmojiMarker(emoji, size = 30) {
+                return L.divIcon({
+                    html: `<div style="font-size: ${size}px; text-align: center; line-height: 1;">${emoji}</div>`,
+                    iconSize: [size, size],
+                    iconAnchor: [size/2, size/2],
+                    popupAnchor: [0, -size/2],
+                    className: 'emoji-marker'
+                });
+            }
+
             // Add marker for Book Tavern (temporary - will be updated with correct coordinates)
-            const bookTavernMarker = L.marker([33.476753, -81.970893])
+            const bookTavernMarker = L.marker([33.476753, -81.970893], {
+                icon: createEmojiMarker('📚', 35)
+            })
                 .addTo(map)
                 .bindPopup(`
                     <div style="text-align: center;">
@@ -135,7 +150,9 @@
                 `);
 
             // Add marker for Boll Weevil
-            const bollWeevilMarker = L.marker([33.478082, -81.966172])
+            const bollWeevilMarker = L.marker([33.478082, -81.966172], {
+                icon: createEmojiMarker('🐛', 35)
+            })
                 .addTo(map)
                 .bindPopup(`
                     <div style="text-align: center;">
