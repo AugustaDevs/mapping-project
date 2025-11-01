@@ -1,0 +1,41 @@
+[
+  {
+    "id": "book-tavern",
+    "name": "The Book Tavern",
+    "emoji": "📚",
+    "coordinates": {
+      "lat": 33.476753,
+      "lng": -81.970893
+    },
+    "address": {
+      "street": "978 Broad Street",
+      "city": "Augusta",
+      "state": "GA",
+      "zipCode": "30901"
+    },
+    "category": "Bookstore",
+    "description": "Bookstore",
+    "area": "Downtown Augusta",
+    "needsCoordinateUpdate": false,
+    "markerSize": 35
+  },
+  {
+    "id": "boll-weevil",
+    "name": "Boll Weevil Cafe & Sweetery",
+    "emoji": "🐛",
+    "coordinates": {
+      "lat": 33.478082,
+      "lng": -81.966172
+    },
+    "address": {
+      "street": "Broad Street",
+      "city": "Augusta",
+      "state": "GA"
+    },
+    "category": "Restaurant & Cafe",
+    "description": "Restaurant & Cafe",
+    "area": "Downtown Augusta",
+    "needsCoordinateUpdate": false,
+    "markerSize": 35
+  }
+]
