@@ -43,7 +43,7 @@ Finally, we hope to see an ecosystem grow around TMP similar to that seen in oth
 This project is a joint effort of AugustaDevs ([TechTalk Augusta](https://techtalkaugusta.com/)), [Softground Dev](https://softground.dev) (Schuster Braun), and [Eccentric Quality Solutions](https://eccentricquality.com/) (Dave Mackey).
 
 ## Getting Started
-Check out [How to Start](HOW-TO-START.md) and [The Next Step](THE-NEXT-STEP.md).
+Check out [How to Start](devDocs/HOW-TO-START.md) and [The Next Step](devDocs/THE-NEXT-STEP.md).
 
 ## License
 
