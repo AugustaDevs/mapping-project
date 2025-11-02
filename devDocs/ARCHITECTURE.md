@@ -25,12 +25,14 @@ To keep things as simple as possible for the moment we don't have a "backend", i
 Assuming that we do have a separate backend, what do we want to use to build our backend?
 
 We could go with a JS/TS base in which case we might use:
+
 - [Express](https://expressjs.com/)
 - [Fastify](https://fastify.dev/)
 - [Next.js](https://nextjs.org/)
-    - Dave: This is hefty and ties us to React for the frontend.
+  - Dave: This is hefty and ties us to React for the frontend.
 
 Or we could use a Python base:
+
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Django](https://www.djangoproject.com/)
 - [AIR](https://feldroy.github.io/air/)

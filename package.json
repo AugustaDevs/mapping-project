@@ -4,21 +4,25 @@
   "description": "Mapping project with Leaflet.js",
   "scripts": {
     "start": "npx http-server -a localhost -p 8080 -c-1",
-    "dev": "npx http-server -a localhost -p 8080 -c-1 -o"
+    "dev": "npx http-server -a localhost -p 8080 -c-1 -o",
+    "format": "prettier --write \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore"
   },
   "keywords": [],
   "author": "",
   "contibutors": [
     {
-        "name": "Dave Mackey",
-        "email": "dave@davemackey.net",
-        "url": "https://davemackey.net"
+      "name": "Dave Mackey",
+      "email": "dave@davemackey.net",
+      "url": "https://davemackey.net"
     },
     {
-        "name": "Schuster Braun",
-        "url": "https://softground.dev"
+      "name": "Schuster Braun",
+      "url": "https://softground.dev"
     }
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
 }
-

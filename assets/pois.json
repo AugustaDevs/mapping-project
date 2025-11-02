@@ -5,10 +5,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -81.970893,
-          33.476753
-        ]
+        "coordinates": [-81.970893, 33.476753]
       },
       "properties": {
         "id": "book-tavern",
@@ -31,10 +28,7 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -81.966172,
-          33.478082
-        ]
+        "coordinates": [-81.966172, 33.478082]
       },
       "properties": {
         "id": "boll-weevil",

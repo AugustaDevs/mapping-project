@@ -8,7 +8,7 @@ The initial target for this project is the Augusta, GA downtown. After that we w
 
 ### The Local Community
 
-TMP will help locals in the community to explore all that the locale has to offer from events to organizations and businesses. 
+TMP will help locals in the community to explore all that the locale has to offer from events to organizations and businesses.
 
 ### Tourists
 
@@ -43,6 +43,7 @@ Finally, we hope to see an ecosystem grow around TMP similar to that seen in oth
 This project is a joint effort of AugustaDevs ([TechTalk Augusta](https://techtalkaugusta.com/)), [Softground Dev](https://softground.dev) (Schuster Braun), and [Eccentric Quality Solutions](https://eccentricquality.com/) (Dave Mackey).
 
 ## Getting Started
+
 Check out [How to Start](devDocs/HOW-TO-START.md) and [The Next Step](devDocs/THE-NEXT-STEP.md).
 
 ## License
