@@ -1,0 +1,24 @@
+{
+  "name": "mapping-project",
+  "version": "0.0.1",
+  "description": "Mapping project with Leaflet.js",
+  "scripts": {
+    "start": "npx http-server -a localhost -p 8080 -c-1",
+    "dev": "npx http-server -a localhost -p 8080 -c-1 -o"
+  },
+  "keywords": [],
+  "author": "",
+  "contibutors": [
+    {
+        "name": "Dave Mackey",
+        "email": "dave@davemackey.net",
+        "url": "https://davemackey.net"
+    },
+    {
+        "name": "Schuster Braun",
+        "url": "https://softground.dev"
+    }
+  ],
+  "license": "MIT"
+}
+
