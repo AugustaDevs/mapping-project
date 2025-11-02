@@ -149,7 +149,12 @@ async function initializeMap() {
 
     // Add markers for all POIs from JSON data
     poisData.features.forEach((poi) => {
-      L.marker([poi.geometry.coordinates[1], poi.geometry.coordinates[0]])
+      const emoji = poi.properties.emoji || "📍";
+      const markerSize = poi.properties.markerSize || 30;
+
+      L.marker([poi.geometry.coordinates[1], poi.geometry.coordinates[0]], {
+        icon: createEmojiMarker(emoji, markerSize),
+      })
         .addTo(map)
         .bindPopup(createPopupContent(poi));
     });
