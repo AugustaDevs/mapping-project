@@ -1,0 +1,55 @@
+{
+  "map": {
+    "center": [33.47373, -81.96762],
+    "zoom": 15,
+    "maxBounds": {
+      "southwest": [33.46041, -81.95071],
+      "northeast": [33.48457, -81.98371]
+    },
+    "maxBoundsViscosity": 1.0,
+    "zoomControl": false,
+    "dragging": false,
+    "defaultTileLayer": "osm",
+    "showLayerControl": true
+  },
+  "tileLayers": {
+    "dark": {
+      "url": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      "options": {
+        "maxZoom": 19,
+        "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+        "subdomains": "abcd"
+      }
+    },
+    "voyager": {
+      "url": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      "options": {
+        "maxZoom": 19,
+        "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+        "subdomains": "abcd"
+      }
+    },
+    "positron": {
+      "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "options": {
+        "maxZoom": 19,
+        "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+        "subdomains": "abcd"
+      }
+    },
+    "osm": {
+      "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "options": {
+        "maxZoom": 19,
+        "attribution": "&copy; OpenStreetMap contributors"
+      }
+    },
+    "satellite": {
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "options": {
+        "maxZoom": 19,
+        "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+      }
+    }
+  }
+}
