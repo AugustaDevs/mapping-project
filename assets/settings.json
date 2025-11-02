@@ -9,12 +9,13 @@
     "maxBoundsViscosity": 1.0,
     "zoomControl": false,
     "dragging": false,
-    "defaultTileLayer": "osm",
+    "defaultTileLayer": "voyager",
     "showLayerControl": true
   },
   "tileLayers": {
     "dark": {
       "url": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      "label": "🌙 Dark Theme",
       "options": {
         "maxZoom": 19,
         "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
@@ -23,6 +24,7 @@
     },
     "voyager": {
       "url": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      "label": "🗺️ Voyager",
       "options": {
         "maxZoom": 19,
         "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
@@ -31,6 +33,7 @@
     },
     "positron": {
       "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "label": "☀️ Light Theme",
       "options": {
         "maxZoom": 19,
         "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
@@ -39,6 +42,7 @@
     },
     "osm": {
       "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "label": "🌍 OpenStreetMap",
       "options": {
         "maxZoom": 19,
         "attribution": "&copy; OpenStreetMap contributors"
@@ -46,6 +50,7 @@
     },
     "satellite": {
       "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "label": "🛰️ Satellite",
       "options": {
         "maxZoom": 19,
         "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"

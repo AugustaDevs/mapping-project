@@ -22,13 +22,15 @@ async function loadTileLayers(settingsPath = "./assets/settings.json") {
     }
 
     const tileLayers = {};
+    const tileLayersLabels = {};
 
     // Convert each JSON definition into a Leaflet tile layer
     for (const [name, config] of Object.entries(tileLayerData)) {
       tileLayers[name] = L.tileLayer(config.url, config.options || {});
+      tileLayersLabels[name] = config.label || name; // Use label if available, otherwise use name
     }
 
-    return tileLayers;
+    return { tileLayers, tileLayersLabels };
   } catch (error) {
     console.error("Error loading tile layers:", error);
     throw error;
@@ -55,13 +57,25 @@ function createPopupContent(poi) {
                   </div>
               `;
 }
+
+// Create custom emoji markers function
+function createEmojiMarker(emoji, size = 30) {
+  return L.divIcon({
+    html: `<div style="font-size: ${size}px; text-align: center; line-height: 1;">${emoji}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2],
+    className: "emoji-marker",
+  });
+}
+
 /**
  * Initializes the map with tile layers and POI markers
  */
 async function initializeMap() {
   try {
     // Load tile layers and POI data in parallel
-    const [tileLayers, poisResponse, settingsResponse] = await Promise.all([
+    const [tileLayersData, poisResponse, settingsResponse] = await Promise.all([
       loadTileLayers(),
       fetch("./assets/pois.json"),
       fetch("./assets/settings.json"),
@@ -70,6 +84,9 @@ async function initializeMap() {
     const poisData = await poisResponse.json();
     const settings = await settingsResponse.json();
     const mapConfig = settings.map || {};
+
+    const tileLayers = tileLayersData.tileLayers;
+    const tileLayersLabels = tileLayersData.tileLayersLabels;
 
     // Bounds for the map:
     const bounds = mapConfig.bounds
@@ -99,7 +116,7 @@ async function initializeMap() {
       // dragging: false // This doesn't adjust with zoom, so folks can't see whole map at zoom
     }).setView(center, zoom);
 
-    // Add default tile layer (using osm from loaded tileLayers)
+    // Add default tile layer
     const defaultLayerName = mapConfig.defaultTileLayer || "osm";
     if (tileLayers[defaultLayerName]) {
       tileLayers[defaultLayerName].addTo(map);
@@ -114,9 +131,20 @@ async function initializeMap() {
       throw new Error("No tile layers available");
     }
 
-    // Add layer control if enabled and multiple layers exist
+    // Add layer control if enabled and multiple layers exist, allows
+    // users to switch between tile layers
     if (mapConfig.showLayerControl && Object.keys(tileLayers).length > 1) {
-      L.control.layers(tileLayers, null, { position: "bottomright" }).addTo(map);
+      // Build layer control object with custom labels
+      const layerControlLayers = {};
+
+      // Use labels from settings for each tile layer
+      for (const [name, layer] of Object.entries(tileLayers)) {
+        if (tileLayersLabels[name]) {
+          layerControlLayers[tileLayersLabels[name]] = layer;
+        }
+      }
+
+      L.control.layers(layerControlLayers).addTo(map);
     }
 
     // Add markers for all POIs from JSON data
