@@ -1,30 +1,39 @@
-# The Mapping Project (TMP)
+# sv
 
-## Introduction
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-TMP is an open source project that will result in the creation of an application (web/mobile) that provides a robust, interactive experience with local organizations and events. It intends to facilitate community and economic growth through serving several different audiences: the local community, tourists, local businesses and organizations, and new and experienced developers.
+## Creating a project
 
-The initial target for this project is the Augusta, GA downtown. After that we want to expand it to include the rest of Augusta proper as well as surrounding communities. From there we hope the project will continue to be implemented in communities throughout the world.
+If you're seeing this, you've probably already done this step. Congrats!
 
-### The Local Community
+```sh
+# create a new project in the current directory
+npx sv create
 
-TMP will help locals in the community to explore all that the locale has to offer from events to organizations and businesses. 
+# create a new project in my-app
+npx sv create my-app
+```
 
-### Tourists
+## Developing
 
-TMP will help tourists learn about our community and spend their time in an enjoyable manner by taking advantage of the unique (and often lesser-known) opportunities the locale offers.
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-### Local Businesses and Organizations
+```sh
+npm run dev
 
-TMP will help local businesses and organizations increase brand name awareness, share information about their events, and offer networking opportunities.
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-### New and Experienced Developers
+## Building
 
-#### New Developers
+To create a production version of your app:
 
-We believe that being able to demonstrate real-world application code allows developers to get a step ahead in a competitive job market.
+```sh
+npm run build
+```
 
-TMP can facilitate this in a few ways:
+You can preview the production build with `npm run preview`.
 
 1. This is a real-world project that is open source and thus the resultant code is publicly accessible with an auditable history that can be used to demonstrate individual experience and skills.
 2. Experienced developers are contributing to the project and eager to assist newer developers in becoming productive and creating real-world code.
@@ -48,3 +57,5 @@ Check out [How to Start](devDocs/HOW-TO-START.md) and [The Next Step](devDocs/TH
 ## License
 
 The software is licensed under the [MIT license](license.md).
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
