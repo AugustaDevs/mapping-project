@@ -6,11 +6,24 @@ This document outlines the architecture that we've chosen as well as what is sti
 
 ## Simplicity
 
-Part of the goal for this project is to make it something that newer developers can contribute to. As such we are intentionally keeping the tooling for the project as simple as possible.
+One of the major goals of this project is to make it something that newer developers can quickly onboard to and begin making substantive contributions to. As such we are favoring simplicity over advanced functionality.
 
-As time progresses we expect to implement various tooling (e.g. TypeScript, Vite) but this can occur step-by-step and hopefully be coupled with blog posts that walk newer developers through the thought and actual change process.
+In practice this looks like:
 
-When a new developer onboards in a year, ideally, they should be able to go back and see the code from it's beginning and follow along with how it evolved. This is helpful when a developer is building a mental model.
+1. Not Using a Bundler
+
+Vite is pretty sweet but it also means we have a transpilation step.
+
+2. Not Using TypeScript
+
+We need a bundler to use TypeScript, so we are using Vanilla JS at this point.
+
+In addition, TypeScript is powerful but can also be confusing for newer devs.
+
+This doesn't mean we will never use this functionality - over time we will likely adopt both Vite and TypeScript. But here's the key. As we add these more advanced functionality we should write blog posts explaining what we are doing and why. This way new developers onboarding to the project can:
+
+1. Look at the evolution of the code over time. Becoming familiar with the basic concepts underlying the application before needing to tackle advanced concepts.
+2. Read about the evolving complexity of the project and understand each layer of complexity individually.
 
 ## Decoupled Frontend and Backend
 

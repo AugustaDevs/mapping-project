@@ -12,6 +12,10 @@ The Mapping Project is both a functional service we intend to provide and a lear
 - Dive in.
 - When you have interesting things to show, push a PR.
 
+## Install Dependencies
+
+We are using a few node modules - e.g., Prettier. You'll want to run `npm i`.
+
 ## Running the Development Server
 
 This project requires a local HTTP server to avoid CORS errors when loading JSON files.
@@ -22,7 +26,7 @@ Run the development server:
 npm start
 ```
 
-This will start a server on `http://localhost:8080`. Open that URL in your browser.
+This will start a server on `http://localhost:5173`. Open that URL in your browser.
 
 To automatically open the browser:
 

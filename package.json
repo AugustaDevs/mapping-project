@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "Mapping project with Leaflet.js",
   "scripts": {
-    "start": "npx http-server -a localhost -p 8080 -c-1",
-    "dev": "npx http-server -a localhost -p 8080 -c-1 -o",
+    "start": "npx http-server src -a localhost -p 8080 -c-1",
+    "dev": "npx http-server src -a localhost -p 8080 -c-1 -o",
     "format": "prettier --write \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore",
     "format:check": "prettier --check \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore"
   },
