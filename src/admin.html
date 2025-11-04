@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="assets/style.css" />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <style>
+      .admin-toolbar { position: absolute; top: 12px; left: 12px; z-index: 1000; display: flex; gap: 8px; }
+      .admin-button { background: #1976d2; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+      .admin-button.secondary { background: #555; }
+      .admin-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1100; }
+      .admin-modal { background: #fff; padding: 16px; border-radius: 8px; width: 360px; max-width: 90vw; }
+      .admin-modal h2 { margin-top: 0; }
+      .form-row { display: flex; gap: 8px; }
+      .form-row > div { flex: 1; }
+      .form-field { margin-bottom: 10px; }
+      .form-field label { display: block; font-size: 12px; margin-bottom: 4px; }
+      .form-field input, .form-field select { width: 100%; padding: 6px 8px; }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+    </style>
+  </head>
+
+  <body>
+    <div class="admin-toolbar">
+      <button id="btnEnterAddPoi" class="admin-button">Add POI</button>
+      <button id="btnExportPois" class="admin-button secondary">Export JSON</button>
+      <button id="btnClearDraft" class="admin-button secondary">Clear Draft</button>
+    </div>
+    <div id="map" class="map-container"></div>
+
+    <div id="poiModalBackdrop" class="admin-modal-backdrop">
+      <div class="admin-modal">
+        <h2>Add Point of Interest</h2>
+        <div class="form-field">
+          <label for="poiName">Name</label>
+          <input id="poiName" type="text" placeholder="POI name" />
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="poiEmoji">Emoji</label>
+            <input id="poiEmoji" type="text" placeholder="e.g. 🍔" maxlength="4" />
+          </div>
+          <div class="form-field">
+            <label for="poiCategory">Category</label>
+            <input id="poiCategory" type="text" placeholder="e.g. Restaurant" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="poiArea">Area</label>
+            <input id="poiArea" type="text" placeholder="e.g. Downtown" />
+          </div>
+          <div class="form-field">
+            <label for="poiMarkerSize">Marker Size</label>
+            <input id="poiMarkerSize" type="number" min="16" max="64" value="30" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Address</label>
+          <div class="form-field">
+            <input id="addrStreet" type="text" placeholder="Street" />
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <input id="addrCity" type="text" placeholder="City" />
+            </div>
+            <div class="form-field">
+              <input id="addrState" type="text" placeholder="State" />
+            </div>
+            <div class="form-field">
+              <input id="addrZip" type="text" placeholder="ZIP (optional)" />
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <small id="poiCoordPreview"></small>
+        </div>
+        <div class="modal-actions">
+          <button id="btnCancelPoi" class="admin-button secondary">Cancel</button>
+          <button id="btnSavePoi" class="admin-button">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+  </body>
+</html>

@@ -3,70 +3,24 @@
  * Initializes the Leaflet map and displays POI markers.
  */
 
+// Helpers are provided by utils.js: createPopupContent, createEmojiMarker
+
 /**
- * Loads tile layers from the settings.json file and converts them to Leaflet tile layer objects.
- * @param {string} settingsPath - Path to the settings JSON file
- * @returns {Promise<Object>} Promise that resolves to an object with tile layer names as keys and L.tileLayer instances as values
+ * Builds tile layers from settings object and returns them with labels.
+ * @param {Object} settings - Settings object containing tileLayers configuration
+ * @returns {Object} Object with tileLayers and tileLayersLabels properties
  */
-async function loadTileLayers(settingsPath = "./assets/settings.json") {
-  try {
-    const response = await fetch(settingsPath);
-    const settings = await response.json();
+function loadTileLayers(settings) {
+  const tileLayerData = settings.tileLayers ?? {};
+  const tileLayers = {};
+  const tileLayersLabels = {};
 
-    // Extract tileLayers section from settings
-    const tileLayerData = settings.tileLayers;
-
-    if (!tileLayerData) {
-      console.warn("No tileLayers section found in settings.json");
-      return {};
-    }
-
-    const tileLayers = {};
-    const tileLayersLabels = {};
-
-    // Convert each JSON definition into a Leaflet tile layer
-    for (const [name, config] of Object.entries(tileLayerData)) {
-      tileLayers[name] = L.tileLayer(config.url, config.options || {});
-      tileLayersLabels[name] = config.label || name; // Use label if available, otherwise use name
-    }
-
-    return { tileLayers, tileLayersLabels };
-  } catch (error) {
-    console.error("Error loading tile layers:", error);
-    throw error;
+  for (const [name, config] of Object.entries(tileLayerData)) {
+    tileLayers[name] = L.tileLayer(config.url, config.options ?? {});
+    tileLayersLabels[name] = config.label ?? name;
   }
-}
 
-// Function to create popup content from POI data
-function createPopupContent(poi) {
-  const coordinateWarning = poi.properties.needsCoordinateUpdate
-    ? '<p><small style="color: red;">Coordinates need to be updated</small></p>'
-    : "";
-
-  const fullAddress = poi.properties.address.zipCode
-    ? `${poi.properties.address.street}<br>${poi.properties.address.city}, ${poi.properties.address.state} ${poi.properties.address.zipCode}`
-    : `${poi.properties.address.street}<br>${poi.properties.address.city}, ${poi.properties.address.state}`;
-
-  return `
-                  <div style="text-align: center;">
-                      <h3>${poi.properties.emoji} ${poi.properties.name}</h3>
-                      <p><strong>${fullAddress}</strong></p>
-                      <p>${poi.properties.category}</p>
-                      <p><em>${poi.properties.area}</em></p>
-                      ${coordinateWarning}
-                  </div>
-              `;
-}
-
-// Create custom emoji markers function
-function createEmojiMarker(emoji, size = 30) {
-  return L.divIcon({
-    html: `<div style="font-size: ${size}px; text-align: center; line-height: 1;">${emoji}</div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -size / 2],
-    className: "emoji-marker",
-  });
+  return { tileLayers, tileLayersLabels };
 }
 
 /**
@@ -74,19 +28,18 @@ function createEmojiMarker(emoji, size = 30) {
  */
 async function initializeMap() {
   try {
-    // Load tile layers and POI data in parallel
-    const [tileLayersData, poisResponse, settingsResponse] = await Promise.all([
-      loadTileLayers(),
+    // Load POIs and settings in parallel
+    const [poisResponse, settingsResponse] = await Promise.all([
       fetch("./assets/pois.json"),
       fetch("./assets/settings.json"),
     ]);
 
     const poisData = await poisResponse.json();
     const settings = await settingsResponse.json();
-    const mapConfig = settings.map || {};
+    const mapConfig = settings.map ?? {};
 
-    const tileLayers = tileLayersData.tileLayers;
-    const tileLayersLabels = tileLayersData.tileLayersLabels;
+    // Build tile layers from settings
+    const { tileLayers, tileLayersLabels } = loadTileLayers(settings);
 
     // Bounds for the map:
     const bounds = mapConfig.bounds
@@ -106,18 +59,18 @@ async function initializeMap() {
         );
 
     // Initialize map with settings
-    const center = mapConfig.center || [33.47373, -81.96762];
-    const zoom = mapConfig.zoom || 15;
+    const center = mapConfig.center ?? [33.47373, -81.96762];
+    const zoom = mapConfig.zoom ?? 15;
 
     const map = L.map("map", {
       maxBounds: bounds,
-      maxBoundsViscosity: mapConfig.maxBoundsViscosity || 1.0, // Prevents panning outside bounds
-      zoomControl: mapConfig.zoomControl || false, // Removes zoom buttons for cleaner look
-      // dragging: false // This doesn't adjust with zoom, so folks can't see whole map at zoom
+      maxBoundsViscosity: mapConfig.maxBoundsViscosity ?? 1.0, // Prevents panning outside bounds
+      zoomControl: mapConfig.zoomControl ?? false, // Removes zoom buttons for cleaner look
+      dragging: mapConfig.dragging ?? true,
     }).setView(center, zoom);
 
     // Add default tile layer
-    const defaultLayerName = mapConfig.defaultTileLayer || "osm";
+    const defaultLayerName = mapConfig.defaultTileLayer ?? "osm";
     if (tileLayers[defaultLayerName]) {
       tileLayers[defaultLayerName].addTo(map);
     } else if (Object.keys(tileLayers).length > 0) {
@@ -149,8 +102,8 @@ async function initializeMap() {
 
     // Add markers for all POIs from JSON data
     poisData.features.forEach((poi) => {
-      const emoji = poi.properties.emoji || "📍";
-      const markerSize = poi.properties.markerSize || 30;
+      const emoji = poi.properties.emoji ?? "📍";
+      const markerSize = poi.properties.markerSize ?? 30;
 
       L.marker([poi.geometry.coordinates[1], poi.geometry.coordinates[0]], {
         icon: createEmojiMarker(emoji, markerSize),
@@ -158,6 +111,16 @@ async function initializeMap() {
         .addTo(map)
         .bindPopup(createPopupContent(poi));
     });
+
+    // Expose references and emit ready event for admin tools if present
+    try {
+      window.__leafletMap = map;
+      window.__poisData = poisData;
+      window.__settings = settings;
+      document.dispatchEvent(
+        new CustomEvent("map:ready", { detail: { map, poisData, settings } })
+      );
+    } catch (_) {}
   } catch (error) {
     console.error("Error initializing map:", error);
   }
