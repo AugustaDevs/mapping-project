@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createPopupContent, createEmojiMarker } from './utils.js';
 
+/**
+ * Tests for utils.js functionality.
+ * Tests utility functions for creating POI popup content and emoji markers.
+ */
+
 // Mock Leaflet since it's loaded via CDN in the browser
 beforeEach(() => {
   global.L = {
@@ -8,6 +13,11 @@ beforeEach(() => {
   };
 });
 
+/**
+ * Tests for createPopupContent function.
+ * Verifies HTML generation for POI popups, including address formatting,
+ * missing field handling, and coordinate update warnings.
+ */
 describe('createPopupContent', () => {
   it('should create popup content with basic POI data', () => {
     const poi = {
@@ -105,6 +115,11 @@ describe('createPopupContent', () => {
   });
 });
 
+/**
+ * Tests for createEmojiMarker function.
+ * Verifies Leaflet DivIcon creation with emoji markers, including default
+ * and custom size configurations.
+ */
 describe('createEmojiMarker', () => {
   it('should create a marker with default size', () => {
     const marker = createEmojiMarker('🍕');

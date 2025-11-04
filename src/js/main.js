@@ -10,7 +10,7 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
  * @param {Object} settings - Settings object containing tileLayers configuration
  * @returns {Object} Object with tileLayers and tileLayersLabels properties
  */
-function loadTileLayers(settings) {
+export function loadTileLayers(settings) {
   const tileLayerData = settings.tileLayers ?? {};
   const tileLayers = {};
   const tileLayersLabels = {};
@@ -26,7 +26,7 @@ function loadTileLayers(settings) {
 /**
  * Initializes the map with tile layers and POI markers
  */
-async function initializeMap() {
+export async function initializeMap() {
   try {
     // Load POIs and settings in parallel
     const [poisResponse, settingsResponse] = await Promise.all([
@@ -132,5 +132,7 @@ async function initializeMap() {
   }
 }
 
-// Initialize the map when script loads
-initializeMap();
+// Initialize the map when script loads (only in browser environment)
+if (typeof window !== 'undefined') {
+  initializeMap();
+}

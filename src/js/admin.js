@@ -1,5 +1,9 @@
 import { createPopupContent, createEmojiMarker } from './utils.js';
-// Admin tools for adding POIs and exporting updated JSON
+/**
+ * Admin tools for adding POIs and exporting updated POIs JSON.
+ * This module provides functionality to add new POIs to the map interactively
+ * and export the combined base and draft POIs as a GeoJSON FeatureCollection.
+ */
 (function () {
   const modalBackdrop = document.getElementById('poiModalBackdrop');
   const coordPreviewEl = document.getElementById('poiCoordPreview');
@@ -27,15 +31,24 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
   let tempMarker = null;
   let draftMarkerLayers = [];
 
+  /**
+   * Displays the POI entry modal.
+   */
   function showModal() {
     modalBackdrop.style.display = 'flex';
   }
 
+  /**
+   * Hides the POI entry modal and clears the form.
+   */
   function hideModal() {
     modalBackdrop.style.display = 'none';
     clearForm();
   }
 
+  /**
+   * Clears all form input fields for the POI entry modal and resets them to default values.
+   */
   function clearForm() {
     inputName.value = '';
     inputEmoji.value = '';
@@ -49,6 +62,10 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     coordPreviewEl.textContent = '';
   }
 
+  /**
+   * Activates or deactivates add mode for placing new POIs on the map.
+   * @param {boolean} active - Whether to activate add mode (true) or deactivate it (false)
+   */
   function setAddMode(active) {
     addModeActive = active;
     if (!map) return;
@@ -60,15 +77,25 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     }
   }
 
+  /**
+   * Combines base POIs (from assets/pois.json) and draft POIs into a single GeoJSON FeatureCollection.
+   * @returns {Object} GeoJSON FeatureCollection containing all base and draft POIs
+   * @returns {string} returns.type - Always "FeatureCollection"
+   * @returns {Object[]} returns.features - Array of GeoJSON Feature objects
+   */
   function getAllPoisFeatureCollection() {
     const features = [];
     if (basePois && Array.isArray(basePois.features)) {
-      for (const f of basePois.features) features.push(f);
+      for (const feature of basePois.features) features.push(feature);
     }
-    for (const f of draftPois) features.push(f);
+    for (const feature of draftPois) features.push(feature);
     return { type: 'FeatureCollection', features };
   }
 
+  /**
+   * Saves draft POIs to browser localStorage for persistence across sessions.
+   * Errors are logged but do not throw to prevent breaking the user experience.
+   */
   function persistDraftToLocalStorage() {
     try {
       localStorage.setItem('draftPois', JSON.stringify(draftPois));
@@ -77,6 +104,10 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     }
   }
 
+  /**
+   * Loads draft POIs from browser localStorage if they exist.
+   * Errors are logged but do not throw to prevent breaking the user experience.
+   */
   function loadDraftFromLocalStorage() {
     try {
       const raw = localStorage.getItem('draftPois');
@@ -91,6 +122,16 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     }
   }
 
+  /**
+   * Adds a Leaflet marker to the map for the given POI.
+   * @param {Object} poi - GeoJSON Feature object representing a POI
+   * @param {Object} poi.geometry - GeoJSON geometry object
+   * @param {number[]} poi.geometry.coordinates - Array of [longitude, latitude]
+   * @param {Object} poi.properties - POI properties
+   * @param {string} [poi.properties.emoji] - Emoji for the marker (defaults to '📍')
+   * @param {number} [poi.properties.markerSize] - Size of the marker in pixels (defaults to 30)
+   * @returns {L.Marker} The Leaflet marker instance that was added to the map
+   */
   function addMarkerForPOI(poi) {
     const emoji = poi.properties.emoji || '📍';
     const markerSize = poi.properties.markerSize || 30;
@@ -105,6 +146,10 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     return marker;
   }
 
+  /**
+   * Exports all POIs (base + draft) as a JSON file download.
+   * Creates a GeoJSON FeatureCollection and triggers a browser download.
+   */
   function exportUpdatedPois() {
     const data = getAllPoisFeatureCollection();
     const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -120,6 +165,10 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     URL.revokeObjectURL(url);
   }
 
+  /**
+   * Wires up all event listeners for admin UI interactions.
+   * Sets up handlers for buttons and map click events.
+   */
   function wireEvents() {
     btnEnterAddPoi.addEventListener('click', () => {
       setAddMode(true);
@@ -233,6 +282,11 @@ import { createPopupContent, createEmojiMarker } from './utils.js';
     });
   }
 
+  /**
+   * Initializes the admin module when the map and POI data are ready.
+   * Polls for window.__leafletMap and window.__poisData to be available,
+   * then loads draft POIs from localStorage and wires up event handlers.
+   */
   function bootstrapWhenReady() {
     if (window.__leafletMap && window.__poisData) {
       map = window.__leafletMap;

@@ -4,6 +4,8 @@ import { createEmojiMarker } from './utils.js';
 /**
  * Tests for admin.js functionality.
  * Since admin.js is an IIFE, we test the core functions by mocking the environment.
+ * Verifies POI data management, localStorage persistence, marker creation,
+ * export functionality, and feature creation with form validation.
  */
 
 describe('Admin functionality', () => {
@@ -97,6 +99,10 @@ describe('Admin functionality', () => {
     storedData = {};
   });
 
+  /**
+   * Tests POI data management operations.
+   * Verifies combining base and draft POIs into FeatureCollections.
+   */
   describe('POI data management', () => {
     it('should combine base POIs and draft POIs correctly', () => {
       const basePois = {
@@ -156,6 +162,10 @@ describe('Admin functionality', () => {
     });
   });
 
+  /**
+   * Tests localStorage persistence for draft POIs.
+   * Verifies saving, loading, and error handling for localStorage operations.
+   */
   describe('localStorage persistence', () => {
     it('should save draft POIs to localStorage', () => {
       const draftPois = [
@@ -208,6 +218,10 @@ describe('Admin functionality', () => {
     });
   });
 
+  /**
+   * Tests POI marker creation with Leaflet.
+   * Verifies coordinate conversion, emoji marker configuration, and default values.
+   */
   describe('POI marker creation', () => {
     it('should create marker with correct coordinates and properties', () => {
       const poi = {
@@ -261,6 +275,10 @@ describe('Admin functionality', () => {
     });
   });
 
+  /**
+   * Tests POI export functionality.
+   * Verifies JSON blob creation and FeatureCollection export format.
+   */
   describe('POI export functionality', () => {
     it('should create correct JSON blob for export', () => {
       const basePois = {
@@ -302,6 +320,10 @@ describe('Admin functionality', () => {
     });
   });
 
+  /**
+   * Tests POI feature creation from form data.
+   * Verifies GeoJSON feature construction, address handling, and marker size validation.
+   */
   describe('POI feature creation', () => {
     it('should create valid GeoJSON feature from form data', () => {
       const pendingLatLng = { lat: 33.47, lng: -81.97 };
