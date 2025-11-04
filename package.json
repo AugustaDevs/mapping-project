@@ -1,12 +1,15 @@
 {
   "name": "mapping-project",
   "version": "0.0.1",
+  "type": "module",
   "description": "Mapping project with Leaflet.js",
   "scripts": {
     "start": "npx http-server src -a localhost -p 8080 -c-1",
     "dev": "npx http-server src -a localhost -p 8080 -c-1 -o",
     "format": "prettier --write \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore",
-    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore"
+    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\" --ignore-path .gitignore",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +26,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
     "prettier": "^3.6.2"
   }
 }
