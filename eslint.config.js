@@ -22,6 +22,5 @@ export default [
       // Allow console for debugging
       'no-console': 'off',
     },
-  }
+  },
 ];
-

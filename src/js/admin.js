@@ -1,23 +1,23 @@
-import { createPopupContent, createEmojiMarker } from "./utils.js";
+import { createPopupContent, createEmojiMarker } from './utils.js';
 // Admin tools for adding POIs and exporting updated JSON
 (function () {
-  const modalBackdrop = document.getElementById("poiModalBackdrop");
-  const coordPreviewEl = document.getElementById("poiCoordPreview");
-  const btnEnterAddPoi = document.getElementById("btnEnterAddPoi");
-  const btnExportPois = document.getElementById("btnExportPois");
-  const btnClearDraft = document.getElementById("btnClearDraft");
-  const btnCancelPoi = document.getElementById("btnCancelPoi");
-  const btnSavePoi = document.getElementById("btnSavePoi");
+  const modalBackdrop = document.getElementById('poiModalBackdrop');
+  const coordPreviewEl = document.getElementById('poiCoordPreview');
+  const btnEnterAddPoi = document.getElementById('btnEnterAddPoi');
+  const btnExportPois = document.getElementById('btnExportPois');
+  const btnClearDraft = document.getElementById('btnClearDraft');
+  const btnCancelPoi = document.getElementById('btnCancelPoi');
+  const btnSavePoi = document.getElementById('btnSavePoi');
 
-  const inputName = document.getElementById("poiName");
-  const inputEmoji = document.getElementById("poiEmoji");
-  const inputCategory = document.getElementById("poiCategory");
-  const inputArea = document.getElementById("poiArea");
-  const inputMarkerSize = document.getElementById("poiMarkerSize");
-  const inputStreet = document.getElementById("addrStreet");
-  const inputCity = document.getElementById("addrCity");
-  const inputState = document.getElementById("addrState");
-  const inputZip = document.getElementById("addrZip");
+  const inputName = document.getElementById('poiName');
+  const inputEmoji = document.getElementById('poiEmoji');
+  const inputCategory = document.getElementById('poiCategory');
+  const inputArea = document.getElementById('poiArea');
+  const inputMarkerSize = document.getElementById('poiMarkerSize');
+  const inputStreet = document.getElementById('addrStreet');
+  const inputCity = document.getElementById('addrCity');
+  const inputState = document.getElementById('addrState');
+  const inputZip = document.getElementById('addrZip');
 
   let map = null;
   let basePois = null; // from assets/pois.json
@@ -28,31 +28,31 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
   let draftMarkerLayers = [];
 
   function showModal() {
-    modalBackdrop.style.display = "flex";
+    modalBackdrop.style.display = 'flex';
   }
 
   function hideModal() {
-    modalBackdrop.style.display = "none";
+    modalBackdrop.style.display = 'none';
     clearForm();
   }
 
   function clearForm() {
-    inputName.value = "";
-    inputEmoji.value = "";
-    inputCategory.value = "";
-    inputArea.value = "";
-    inputMarkerSize.value = "30";
-    inputStreet.value = "";
-    inputCity.value = "";
-    inputState.value = "";
-    inputZip.value = "";
-    coordPreviewEl.textContent = "";
+    inputName.value = '';
+    inputEmoji.value = '';
+    inputCategory.value = '';
+    inputArea.value = '';
+    inputMarkerSize.value = '30';
+    inputStreet.value = '';
+    inputCity.value = '';
+    inputState.value = '';
+    inputZip.value = '';
+    coordPreviewEl.textContent = '';
   }
 
   function setAddMode(active) {
     addModeActive = active;
     if (!map) return;
-    map.getContainer().style.cursor = active ? "crosshair" : "";
+    map.getContainer().style.cursor = active ? 'crosshair' : '';
     if (!active && tempMarker) {
       map.removeLayer(tempMarker);
       tempMarker = null;
@@ -66,20 +66,20 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
       for (const f of basePois.features) features.push(f);
     }
     for (const f of draftPois) features.push(f);
-    return { type: "FeatureCollection", features };
+    return { type: 'FeatureCollection', features };
   }
 
   function persistDraftToLocalStorage() {
     try {
-      localStorage.setItem("draftPois", JSON.stringify(draftPois));
+      localStorage.setItem('draftPois', JSON.stringify(draftPois));
     } catch (error) {
-      console.error("Error persisting draft POIs to localStorage:", error);
+      console.error('Error persisting draft POIs to localStorage:', error);
     }
   }
 
   function loadDraftFromLocalStorage() {
     try {
-      const raw = localStorage.getItem("draftPois");
+      const raw = localStorage.getItem('draftPois');
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
@@ -87,16 +87,19 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
         }
       }
     } catch (error) {
-      console.error("Error loading draft POIs from localStorage:", error);
+      console.error('Error loading draft POIs from localStorage:', error);
     }
   }
 
   function addMarkerForPOI(poi) {
-    const emoji = poi.properties.emoji || "📍";
+    const emoji = poi.properties.emoji || '📍';
     const markerSize = poi.properties.markerSize || 30;
-    const marker = L.marker([poi.geometry.coordinates[1], poi.geometry.coordinates[0]], {
-      icon: createEmojiMarker(emoji, markerSize),
-    }).addTo(map);
+    const marker = L.marker(
+      [poi.geometry.coordinates[1], poi.geometry.coordinates[0]],
+      {
+        icon: createEmojiMarker(emoji, markerSize),
+      }
+    ).addTo(map);
     marker.bindPopup(createPopupContent(poi));
     draftMarkerLayers.push(marker);
     return marker;
@@ -104,11 +107,13 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
 
   function exportUpdatedPois() {
     const data = getAllPoisFeatureCollection();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = "pois.json";
+    a.download = 'pois.json';
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -116,21 +121,21 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
   }
 
   function wireEvents() {
-    btnEnterAddPoi.addEventListener("click", () => {
+    btnEnterAddPoi.addEventListener('click', () => {
       setAddMode(true);
     });
 
-    btnExportPois.addEventListener("click", () => {
+    btnExportPois.addEventListener('click', () => {
       exportUpdatedPois();
     });
 
-    btnClearDraft.addEventListener("click", () => {
+    btnClearDraft.addEventListener('click', () => {
       draftPois = [];
       persistDraftToLocalStorage();
       try {
         map.closePopup();
       } catch (error) {
-        console.error("Error closing popup:", error);
+        console.error('Error closing popup:', error);
       }
       // Remove draft markers currently shown on the map
       if (draftMarkerLayers && draftMarkerLayers.length) {
@@ -138,7 +143,7 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
           try {
             map.removeLayer(layer);
           } catch (error) {
-            console.error("Error removing layer:", error);
+            console.error('Error removing layer:', error);
           }
         }
       }
@@ -148,30 +153,35 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
         try {
           map.removeLayer(tempMarker);
         } catch (error) {
-          console.error("Error removing temp marker:", error);
+          console.error('Error removing temp marker:', error);
         }
         tempMarker = null;
       }
       pendingLatLng = null;
-      alert("Draft POIs cleared. Previously exported pois.json files are unaffected.");
+      alert(
+        'Draft POIs cleared. Previously exported pois.json files are unaffected.'
+      );
     });
 
-    btnCancelPoi.addEventListener("click", () => {
+    btnCancelPoi.addEventListener('click', () => {
       setAddMode(false);
       hideModal();
     });
 
-    btnSavePoi.addEventListener("click", () => {
+    btnSavePoi.addEventListener('click', () => {
       if (!pendingLatLng) return;
       const name = inputName.value.trim();
       if (!name) {
-        alert("Please provide a name.");
+        alert('Please provide a name.');
         return;
       }
-      const emoji = inputEmoji.value.trim() || "📍";
+      const emoji = inputEmoji.value.trim() || '📍';
       const category = inputCategory.value.trim();
       const area = inputArea.value.trim();
-      const markerSize = Math.max(16, Math.min(64, parseInt(inputMarkerSize.value, 10) || 30));
+      const markerSize = Math.max(
+        16,
+        Math.min(64, parseInt(inputMarkerSize.value, 10) || 30)
+      );
       const address = {
         street: inputStreet.value.trim(),
         city: inputCity.value.trim(),
@@ -180,9 +190,9 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
       };
 
       const feature = {
-        type: "Feature",
+        type: 'Feature',
         geometry: {
-          type: "Point",
+          type: 'Point',
           coordinates: [pendingLatLng.lng, pendingLatLng.lat],
         },
         properties: {
@@ -204,11 +214,13 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
       // Reset add mode and close modal
       setAddMode(false);
       hideModal();
-      alert("POI added to draft. Use Export JSON to download updated pois.json.");
+      alert(
+        'POI added to draft. Use Export JSON to download updated pois.json.'
+      );
     });
 
     // map click handler for add mode
-    map.on("click", (ev) => {
+    map.on('click', (ev) => {
       if (!addModeActive) return;
       pendingLatLng = ev.latlng;
       if (tempMarker) {
@@ -237,11 +249,9 @@ import { createPopupContent, createEmojiMarker } from "./utils.js";
   }
 
   // Start after DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bootstrapWhenReady);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapWhenReady);
   } else {
     bootstrapWhenReady();
   }
 })();
-
-

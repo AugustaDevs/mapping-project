@@ -15,26 +15,82 @@
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/admin.js"></script>
     <style>
-      .admin-toolbar { position: absolute; top: 12px; left: 12px; z-index: 1000; display: flex; gap: 8px; }
-      .admin-button { background: #1976d2; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-      .admin-button.secondary { background: #555; }
-      .admin-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1100; }
-      .admin-modal { background: #fff; padding: 16px; border-radius: 8px; width: 360px; max-width: 90vw; }
-      .admin-modal h2 { margin-top: 0; }
-      .form-row { display: flex; gap: 8px; }
-      .form-row > div { flex: 1; }
-      .form-field { margin-bottom: 10px; }
-      .form-field label { display: block; font-size: 12px; margin-bottom: 4px; }
-      .form-field input, .form-field select { width: 100%; padding: 6px 8px; }
-      .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+      .admin-toolbar {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 1000;
+        display: flex;
+        gap: 8px;
+      }
+      .admin-button {
+        background: #1976d2;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .admin-button.secondary {
+        background: #555;
+      }
+      .admin-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+      }
+      .admin-modal {
+        background: #fff;
+        padding: 16px;
+        border-radius: 8px;
+        width: 360px;
+        max-width: 90vw;
+      }
+      .admin-modal h2 {
+        margin-top: 0;
+      }
+      .form-row {
+        display: flex;
+        gap: 8px;
+      }
+      .form-row > div {
+        flex: 1;
+      }
+      .form-field {
+        margin-bottom: 10px;
+      }
+      .form-field label {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      .form-field input,
+      .form-field select {
+        width: 100%;
+        padding: 6px 8px;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+      }
     </style>
   </head>
 
   <body>
     <div class="admin-toolbar">
       <button id="btnEnterAddPoi" class="admin-button">Add POI</button>
-      <button id="btnExportPois" class="admin-button secondary">Export JSON</button>
-      <button id="btnClearDraft" class="admin-button secondary">Clear Draft</button>
+      <button id="btnExportPois" class="admin-button secondary">
+        Export JSON
+      </button>
+      <button id="btnClearDraft" class="admin-button secondary">
+        Clear Draft
+      </button>
     </div>
     <div id="map" class="map-container"></div>
 
@@ -48,7 +104,12 @@
         <div class="form-row">
           <div class="form-field">
             <label for="poiEmoji">Emoji</label>
-            <input id="poiEmoji" type="text" placeholder="e.g. 🍔" maxlength="4" />
+            <input
+              id="poiEmoji"
+              type="text"
+              placeholder="e.g. 🍔"
+              maxlength="4"
+            />
           </div>
           <div class="form-field">
             <label for="poiCategory">Category</label>
@@ -62,7 +123,13 @@
           </div>
           <div class="form-field">
             <label for="poiMarkerSize">Marker Size</label>
-            <input id="poiMarkerSize" type="number" min="16" max="64" value="30" />
+            <input
+              id="poiMarkerSize"
+              type="number"
+              min="16"
+              max="64"
+              value="30"
+            />
           </div>
         </div>
         <div class="form-field">
@@ -86,7 +153,9 @@
           <small id="poiCoordPreview"></small>
         </div>
         <div class="modal-actions">
-          <button id="btnCancelPoi" class="admin-button secondary">Cancel</button>
+          <button id="btnCancelPoi" class="admin-button secondary">
+            Cancel
+          </button>
           <button id="btnSavePoi" class="admin-button">Save</button>
         </div>
       </div>
