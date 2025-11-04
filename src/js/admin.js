@@ -1,3 +1,4 @@
+import { createPopupContent, createEmojiMarker } from "./utils.js";
 // Admin tools for adding POIs and exporting updated JSON
 (function () {
   const modalBackdrop = document.getElementById("poiModalBackdrop");
@@ -71,7 +72,9 @@
   function persistDraftToLocalStorage() {
     try {
       localStorage.setItem("draftPois", JSON.stringify(draftPois));
-    } catch (_) {}
+    } catch (error) {
+      console.error("Error persisting draft POIs to localStorage:", error);
+    }
   }
 
   function loadDraftFromLocalStorage() {
@@ -83,7 +86,9 @@
           draftPois = parsed;
         }
       }
-    } catch (_) {}
+    } catch (error) {
+      console.error("Error loading draft POIs from localStorage:", error);
+    }
   }
 
   function addMarkerForPOI(poi) {
@@ -122,17 +127,29 @@
     btnClearDraft.addEventListener("click", () => {
       draftPois = [];
       persistDraftToLocalStorage();
-      try { map.closePopup(); } catch (_) {}
+      try {
+        map.closePopup();
+      } catch (error) {
+        console.error("Error closing popup:", error);
+      }
       // Remove draft markers currently shown on the map
       if (draftMarkerLayers && draftMarkerLayers.length) {
         for (const layer of draftMarkerLayers) {
-          try { map.removeLayer(layer); } catch (_) {}
+          try {
+            map.removeLayer(layer);
+          } catch (error) {
+            console.error("Error removing layer:", error);
+          }
         }
       }
       draftMarkerLayers = [];
       // Remove any temporary marker from add-mode
       if (tempMarker) {
-        try { map.removeLayer(tempMarker); } catch (_) {}
+        try {
+          map.removeLayer(tempMarker);
+        } catch (error) {
+          console.error("Error removing temp marker:", error);
+        }
         tempMarker = null;
       }
       pendingLatLng = null;

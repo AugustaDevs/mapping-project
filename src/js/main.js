@@ -3,7 +3,7 @@
  * Initializes the Leaflet map and displays POI markers.
  */
 
-// Helpers are provided by utils.js: createPopupContent, createEmojiMarker
+import { createPopupContent, createEmojiMarker } from "./utils.js";
 
 /**
  * Builds tile layers from settings object and returns them with labels.
@@ -120,7 +120,9 @@ async function initializeMap() {
       document.dispatchEvent(
         new CustomEvent("map:ready", { detail: { map, poisData, settings } })
       );
-    } catch (_) {}
+    } catch (error) {
+      console.error("Error exposing map references:", error);
+    }
   } catch (error) {
     console.error("Error initializing map:", error);
   }

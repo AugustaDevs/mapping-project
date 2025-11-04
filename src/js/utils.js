@@ -1,6 +1,6 @@
 // Shared helpers for map UI
 
-function createPopupContent(poi) {
+export function createPopupContent(poi) {
   const coordinateWarning = poi.properties.needsCoordinateUpdate
     ? '<p><small style="color: red;">Coordinates need to be updated</small></p>'
     : "";
@@ -26,7 +26,7 @@ function createPopupContent(poi) {
   `;
 }
 
-function createEmojiMarker(emoji, size = 30) {
+export function createEmojiMarker(emoji, size = 30) {
   return L.divIcon({
     html: `<div style="font-size: ${size}px; text-align: center; line-height: 1;">${emoji}</div>`,
     iconSize: [size, size],
