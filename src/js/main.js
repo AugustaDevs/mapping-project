@@ -34,6 +34,13 @@ async function initializeMap() {
       fetch('./assets/settings.json'),
     ]);
 
+    if (!poisResponse.ok) {
+      throw new Error(`Failed to load POIs: ${poisResponse.status} ${poisResponse.statusText}`);
+    }
+    if (!settingsResponse.ok) {
+      throw new Error(`Failed to load settings: ${settingsResponse.status} ${settingsResponse.statusText}`);
+    }
+
     const poisData = await poisResponse.json();
     const settings = await settingsResponse.json();
     const mapConfig = settings.map ?? {};

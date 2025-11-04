@@ -59,6 +59,50 @@ describe('createPopupContent', () => {
     const result = createPopupContent(poi);
     expect(result).toContain('Coordinates need to be updated');
   });
+
+  it('should handle address without zip code', () => {
+    const poi = {
+      properties: {
+        name: 'Test POI',
+        address: {
+          street: '123 Main St',
+          city: 'Augusta',
+          state: 'GA',
+        },
+      },
+    };
+
+    const result = createPopupContent(poi);
+    expect(result).toContain('123 Main St');
+    expect(result).toContain('Augusta, GA');
+    expect(result).not.toContain('30901');
+  });
+
+  it('should handle empty address object', () => {
+    const poi = {
+      properties: {
+        name: 'Test POI',
+        address: {},
+      },
+    };
+
+    const result = createPopupContent(poi);
+    expect(result).toContain('Test POI');
+    // Should not crash with empty address
+  });
+
+  it('should handle missing category and area', () => {
+    const poi = {
+      properties: {
+        name: 'Test POI',
+        emoji: '📍',
+      },
+    };
+
+    const result = createPopupContent(poi);
+    expect(result).toContain('Test POI');
+    // Empty category and area should still render (as empty strings)
+  });
 });
 
 describe('createEmojiMarker', () => {
