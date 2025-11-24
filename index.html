@@ -10,6 +10,34 @@
     </head>
     <body>
         <div id="map"></div>
+
+        <!-- Dialog for adding POI -->
+        <dialog id="poi-dialog">
+            <form method="dialog" id="poi-form">
+                <h3>Add Point of Interest</h3>
+                <label>
+                    Name: <span class="required">*</span>
+                    <input type="text" id="poi-name" required placeholder="e.g., Cool Coffee Shop">
+                </label>
+                <label>
+                    Emoji: <span class="required">*</span>
+                    <input type="text" id="poi-emoji" maxlength="2" required placeholder="e.g., ☕">
+                </label>
+                <label>
+                    Address:
+                    <input type="text" id="poi-address" placeholder="e.g., 123 Broad Street, Augusta, GA 30901">
+                </label>
+                <label>
+                    Description:
+                    <textarea id="poi-description" rows="3" placeholder="e.g., Coffee Shop & Cafe"></textarea>
+                </label>
+                <div class="dialog-buttons">
+                    <button type="submit" class="save-btn">Save POI</button>
+                    <button type="button" class="cancel-btn" onclick="document.getElementById('poi-dialog').close()">Cancel</button>
+                </div>
+            </form>
+        </dialog>
+
         <script>
             // Bounds for the map:
             const bounds = L.latLngBounds(
@@ -75,35 +103,35 @@
 
             // Temporary marker for placing pins
             let tempMarker = null;
-            
+            let isAddingPOI = false;
+            let pendingPOILocation = null; // Store location while waiting for user input
+
             // Click event to place temporary marker and show coordinates
             map.on('click', function(e) {
-                const lat = e.latlng.lat.toFixed(6);
-                const lng = e.latlng.lng.toFixed(6);
-                
-                // Remove previous temporary marker if it exists
-                if (tempMarker) {
-                    map.removeLayer(tempMarker);
+                if (isAddingPOI) {
+                    const lat = e.latlng.lat.toFixed(6);
+                    const lng = e.latlng.lng.toFixed(6);
+
+                    // Store the location
+                    pendingPOILocation = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+                    // Remove previous temporary marker if it exists
+                    if (tempMarker) {
+                        map.removeLayer(tempMarker);
+                    }
+
+                    // Add new temporary marker at the clicked location
+                    tempMarker = L.marker([lat, lng], {
+                        icon: createEmojiMarker('📍', 30)
+                    }).addTo(map);
+
+                    // Show the dialog to get POI details
+                    const dialog = document.getElementById('poi-dialog');
+                    dialog.showModal();
+
+                    // Focus on name input
+                    document.getElementById('poi-name').focus();
                 }
-                
-                // Add new temporary marker with emoji
-                tempMarker = L.marker([lat, lng], {
-                    icon: createEmojiMarker('📍', 30)
-                })
-                    .addTo(map)
-                    .bindPopup(`
-                        <div style="text-align: center;">
-                            <h3>📍 Coordinates</h3>
-                            <p><strong>Latitude:</strong> ${lat}</p>
-                            <p><strong>Longitude:</strong> ${lng}</p>
-                            <p><small>Click anywhere else to place a new pin</small></p>
-                            <button onclick="copyCoordinates('${lat}, ${lng}')">Copy Coordinates</button>
-                        </div>
-                    `)
-                    .openPopup();
-                
-                // Also log to console for easy copying
-                console.log(`Coordinates: ${lat}, ${lng}`);
             });
             
             // Function to copy coordinates to clipboard
@@ -132,6 +160,191 @@
                     className: 'emoji-marker'
                 });
             }
+
+            // API functions for POI persistence
+            async function savePOI(poi) {
+                try {
+                    const response = await fetch('/api/pois', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(poi)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to save POI');
+                    }
+
+                    const result = await response.json();
+                    return result;
+                } catch (error) {
+                    console.error('Error saving POI:', error);
+                    alert('Failed to save POI. Please try again.');
+                    throw error;
+                }
+            }
+
+            async function getAllPOIs() {
+                try {
+                    const response = await fetch('/api/pois');
+
+                    if (!response.ok) {
+                        throw new Error('Failed to load POIs');
+                    }
+
+                    const pois = await response.json();
+                    return pois;
+                } catch (error) {
+                    console.error('Error loading POIs:', error);
+                    return [];
+                }
+            }
+
+            function createPOIMarker(poi) {
+                // Build popup HTML with optional fields
+                let popupHTML = `
+                    <div style="text-align: center;">
+                        <h3>${poi.emoji} ${poi.name}</h3>`;
+
+                if (poi.address) {
+                    popupHTML += `<p><strong>${poi.address}</strong></p>`;
+                }
+
+                if (poi.description) {
+                    popupHTML += `<p>${poi.description}</p>`;
+                }
+
+                popupHTML += `
+                        <p><em>Lat: ${poi.lat}, Lng: ${poi.lng}</em></p>
+                        <p><small>Added: ${new Date(poi.timestamp).toLocaleDateString()}</small></p>
+                    </div>
+                `;
+
+                const marker = L.marker([poi.lat, poi.lng], {
+                    icon: createEmojiMarker(poi.emoji, 35)
+                })
+                    .addTo(map)
+                    .bindPopup(popupHTML);
+                return marker;
+            }
+
+            // Load saved POIs on page load
+            async function loadSavedPOIs() {
+                const pois = await getAllPOIs();
+                pois.forEach(poi => createPOIMarker(poi));
+                console.log(`Loaded ${pois.length} saved POIs from server`);
+            }
+
+            // Handle POI form submission
+            document.getElementById('poi-form').addEventListener('submit', async function(e) {
+                if (!pendingPOILocation) return;
+
+                const name = document.getElementById('poi-name').value.trim();
+                const emoji = document.getElementById('poi-emoji').value.trim();
+                const address = document.getElementById('poi-address').value.trim();
+                const description = document.getElementById('poi-description').value.trim();
+
+                if (name && emoji) {
+                    // Create POI object
+                    const poi = {
+                        id: Date.now(),
+                        lat: pendingPOILocation.lat,
+                        lng: pendingPOILocation.lng,
+                        name: name,
+                        emoji: emoji,
+                        address: address || undefined,
+                        description: description || undefined,
+                        timestamp: Date.now()
+                    };
+
+                    try {
+                        // Save to server
+                        await savePOI(poi);
+
+                        // Remove temporary marker
+                        if (tempMarker) {
+                            map.removeLayer(tempMarker);
+                            tempMarker = null;
+                        }
+
+                        // Create permanent marker
+                        createPOIMarker(poi);
+
+                        // Clear form
+                        document.getElementById('poi-name').value = '';
+                        document.getElementById('poi-emoji').value = '';
+                        document.getElementById('poi-address').value = '';
+                        document.getElementById('poi-description').value = '';
+
+                        // Exit POI mode
+                        isAddingPOI = false;
+                        updatePOIButtonState();
+                        map.getContainer().style.cursor = '';
+
+                        // Clear pending location
+                        pendingPOILocation = null;
+
+                        console.log('POI saved:', poi);
+                    } catch (error) {
+                        // Error already handled in savePOI function
+                        // Keep the form open so user can try again
+                    }
+                }
+            });
+
+            // Handle dialog cancel/close
+            document.getElementById('poi-dialog').addEventListener('close', function() {
+                // If user cancelled, remove temp marker
+                if (tempMarker && !document.getElementById('poi-name').value) {
+                    map.removeLayer(tempMarker);
+                    tempMarker = null;
+                }
+                // Clear form
+                document.getElementById('poi-name').value = '';
+                document.getElementById('poi-emoji').value = '';
+                document.getElementById('poi-address').value = '';
+                document.getElementById('poi-description').value = '';
+            });
+
+            // Function to update button state
+            function updatePOIButtonState() {
+                const button = document.querySelector('.add-poi-button');
+                if (button) {
+                    if (isAddingPOI) {
+                        button.classList.add('active');
+                        map.getContainer().style.cursor = 'crosshair';
+                    } else {
+                        button.classList.remove('active');
+                        map.getContainer().style.cursor = '';
+                    }
+                }
+            }
+
+            L.Control.AddPOI = L.Control.extend({
+                onAdd: function(map) {
+                    // Create the button element
+                    var button = L.DomUtil.create('button');
+                    button.innerHTML = '📍 Add POI';
+                    button.className = 'add-poi-button';
+
+                    // Prevent map clicks when clicking the button
+                    L.DomEvent.disableClickPropagation(button);
+
+                    // Add click handler
+                    button.onclick = function() {
+                        isAddingPOI = !isAddingPOI;
+                        updatePOIButtonState();
+                    };
+
+                    return button;
+                }
+            });
+
+            new L.Control.AddPOI({ position: 'topleft' }).addTo(map);
+
+            // Load saved POIs after map is initialized
+            loadSavedPOIs();
 
             // Add marker for Book Tavern (temporary - will be updated with correct coordinates)
             const bookTavernMarker = L.marker([33.476753, -81.970893], {
